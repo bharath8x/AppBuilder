@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -58,7 +61,35 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+      resendOTP();
     });
+  }
+
+  Future<String> resendOTP() async {
+    try {
+      http.Response response = await http.get(Uri.parse(
+          "https://mobilitybuyer.sumasoft.com/api/generate-otp?phone=9730548384"));
+      print("STATUS CODE ${response.statusCode}");
+      if (response.statusCode == 200) {
+        var responseBody = json.decode(response.body);
+        print("ResponseBody $responseBody");
+        if (responseBody != null) {
+          // int statusCode = responseBody[AppPrefs.STATUS_CODE];
+          // String messageText = responseBody[AppPrefs.MESSATE_TEXT];
+          // myBotToast(text: messageText);
+          // if (statusCode == 200) {
+          //   return responseBody["data"];
+          // }
+        }
+      } else if (response.statusCode == 401) {
+        // myBotToast(text: AppCommonMsg.AUTH_FAILURE);
+        // prefs.clear();
+        // Get.offAll(() => IntroPage());
+      }
+    } catch (e) {
+      print("Exception $e");
+    }
+    return "false";
   }
 
   @override
